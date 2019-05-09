@@ -1,3 +1,4 @@
+#include <cmath>
 #include "fieldElement.h"
 
 using namespace std;
@@ -37,6 +38,24 @@ FieldElement operator*(FieldElement &left, FieldElement &right){
   return FieldElement((left._v * right._v) % left._p, left._p);
 }
 
+FieldElement operator/(FieldElement &left, FieldElement &right){
+  if(left._p != right._p){
+    throw 2;
+  }
+
+  return FieldElement((left._v * right.pow(right._p - 2)._v) % left._p, left._p);
+}
+
+FieldElement FieldElement::pow(int exponent){
+  int value = 1;
+  int expon = exponent % (_p - 1);
+  for(int i=0; i < expon; i++){
+    value *= _v;
+    value %= _p;
+  }
+  return FieldElement(value, _p);
+}
+
 bool operator==(FieldElement &left, FieldElement &right){
   if(left._p == right._p && left._v == right._v){
     return true;
@@ -46,6 +65,6 @@ bool operator==(FieldElement &left, FieldElement &right){
 }
 
 ostream & operator << (ostream &out, const FieldElement &f){
-  out << "F(" << f._v << ")" << f._p;
+  out << "F" << f._p << "(" << f._v << ")";
   return out;
 }
